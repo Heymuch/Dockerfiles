@@ -1,0 +1,17 @@
+FROM alpine:edge
+
+# Update and install packages
+RUN apk update && apk upgrade && apk add neovim git
+
+# Add non-root user
+RUN adduser -h /home/doctor -u 1000 -D doctor
+RUN passwd -d doctor
+USER doctor
+
+# Neovim configuration
+COPY --chown=1000:1000 ./config /home/doctor/.config/nvim
+
+WORKDIR /workspace
+
+VOLUME [ "/workspace" ]
+ENTRYPOINT [ "nvim" ]
